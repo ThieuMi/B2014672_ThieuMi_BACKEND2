@@ -1,26 +1,28 @@
 const ApiError = require("../api-error");
-const MongoDB = require("../app/utils/mongodb.util");
-const contactService = require("../services/contact.service");
-const contactService = require("../services/contact.service");
-// Create and Save a new Contact
+const MongoDB = require('../utils/mongodb.util');
+const ContactService = require('../services/contact.service')
+
+// Create and Save a new 
+//Cài đặt handler create
 exports.create = async (req, res, next) =>{
     if (!req.body?.name){
         return next(new ApiError(400, "Name can not be empty"));
     }
     try{
-        const contactService = new contactService(MongoDB.client);
+        const contactService = new ContactService(MongoDB.client);
         const document = await contactService.create(req.body);
+        console.log("test");
         return res.send(document);
     } catch(error) {
         return next(
-            new ApiError(500, "An error occurred white creating th contact")
+            new ApiError(500, "An error occurred white creating contact")
         );
     }
 };
 exports.findALL = async (req, res, next) =>{
-    let document = [];
+    let documents = [];
     try {
-        const contactService = new contactService(MongoDB.client);
+        const contactService = new ContactService(MongoDB.client);
 
         const { name } = req.query;
         if (name) {
@@ -39,8 +41,8 @@ exports.findALL = async (req, res, next) =>{
 exports.findOne = async (req, res, next) =>{
     let document = [];
     try {
-        const contactService = new contactService(MongoDB.client);
-        const documents = await contactService.findById(req.params.id);
+        const contactService = new ContactService(MongoDB.client);
+        const document = await contactService.findById(req.params.id);
         if (!document){
             return next(new ApiError(400, "Contact not found"));
         }    
@@ -57,7 +59,7 @@ exports.update = async (req, res, next) =>{
         return next(new ApiError(400, "Name can not be empty"));
     }
     try{
-        const contactService = new contactService(MongoDB.client);
+        const contactService = new ContactService(MongoDB.client);
         const document = await contactService.update(req.params.id, req.body);
         if (!document){
             return next(new ApiError(400, "Contact not found"));
@@ -71,7 +73,7 @@ exports.update = async (req, res, next) =>{
 // handler delete
 exports.delete = async (req, res, next) =>{
     try{
-        const contactService = new contactService(MongoDB.client);
+        const contactService = new ContactService(MongoDB.client);
         const document = await contactService.update(req.params.id, req.body);
         if (!document){
             return next(new ApiError(400, "Contact not found"));
@@ -86,8 +88,8 @@ exports.delete = async (req, res, next) =>{
 //Cài đặt handler findAllFavorite:
 exports.findALLFavorite = async (_req, res, next) =>{
     try{
-        const contactService = new contactService(MongoDB.client);
-        const document = await contactService.findFavorite();
+        const contactService = new ContactService(MongoDB.client);
+        const documents = await contactService.findFavorite();
         return res.send(documents);
     } catch(error) {
         return next(
@@ -96,10 +98,10 @@ exports.findALLFavorite = async (_req, res, next) =>{
     }
 };
 //Cài đặt handler deleteAll:
-exports.deleteALL = async (_req, res, next) =>{
+exports.deleteALL = async (req, res, next) =>{
     try{
-        const contactService = new contactService(MongoDB.client);
-        const deleteCount = await contactService.deleteALL();
+        const contactService = new ContactService(MongoDB.client);
+        const deleteCount = await contactService.deleteAll();
         return res.send({ message: `${deleteCount} Contact was deleted successfully` });
     } catch(error) {
         return next(
@@ -107,24 +109,22 @@ exports.deleteALL = async (_req, res, next) =>{
         );
     }
 };
-exports.create = (req, res) => {
-    res.send({ message: "create handler"});
-};
-exports.findALL = (req, res) => {
-    res.send({ message: "findALL handler"});
-};
-exports.findOne = (req, res) => {
-    res.send({ message: "findOne handler"});
-};
-exports.update = (req, res) => {
-    res.send({ message: "update handler"});
-};
-exports.delete = (req, res) => {
-    res.send({ message: "delete handler"})
-}
-exports.deleteALL = (req, res) => {
-    res.send({ message: "deleteALL handler"})
-};
-exports.findALLFavorite = (req, res) => {
-    res.send({ message: "fineALLFavorite handler"});
-};
+
+// exports.findALL = (req, res) => {
+//     res.send({ message: "findALL handler"});
+// };
+// exports.findOne = (req, res) => {
+//     res.send({ message: "findOne handler"});
+// };
+// exports.update = (req, res) => {
+//     res.send({ message: "update handler"});
+// };
+// exports.delete = (req, res) => {
+//     res.send({ message: "delete handler"})
+// }
+// exports.deleteALL = (req, res) => {
+//     res.send({ message: "deleteALL handler"})
+// };
+// exports.findALLFavorite = (req, res) => {
+//     res.send({ message: "fineALLFavorite handler"});
+// };
